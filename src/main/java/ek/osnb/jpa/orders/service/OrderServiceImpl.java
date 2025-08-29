@@ -22,7 +22,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<Order> getAllOrders(OrderStatus status) {
-        return List.of();
+        return orderRepository.findAll();
     }
 
     @Override
