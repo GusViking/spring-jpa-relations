@@ -37,7 +37,19 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public Order updateOrder(Long id, Order order) {
-        return null;
+        Optional<Order> existingOrder = orderRepository.findById(id);
+        if (existingOrder.isPresent()) {
+            Order updatedOrder = existingOrder.get();
+            updatedOrder.setOrderDate(order.getOrderDate());
+            updatedOrder.setStatus(order.getStatus());
+
+            updatedOrder.clearOrderLines();
+            for (var line : order.getOrderLines()) {
+                updatedOrder.addOrderLine(line);
+            }
+            return orderRepository.save(updatedOrder);
+        }
+        throw new RuntimeException("Order not found with id: " + id);
     }
 
     @Override
