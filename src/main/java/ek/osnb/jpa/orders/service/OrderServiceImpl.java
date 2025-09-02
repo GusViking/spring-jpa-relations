@@ -3,6 +3,7 @@ package ek.osnb.jpa.orders.service;
 import ek.osnb.jpa.orders.dto.OrderDto;
 import ek.osnb.jpa.orders.dto.OrderLineDto;
 import ek.osnb.jpa.orders.dto.OrderMapper;
+import ek.osnb.jpa.orders.dto.OrderUpdateDto;
 import ek.osnb.jpa.orders.model.Order;
 import ek.osnb.jpa.orders.model.OrderLine;
 import ek.osnb.jpa.orders.model.OrderStatus;
@@ -53,19 +54,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDto updateOrder(Long id, OrderDto orderDto) {
+        return null;
+    }
+
+    @Override
+    public OrderDto updateOrderStatus(Long id, OrderUpdateDto orderUpdateDto) {
         Optional<Order> existingOrder = orderRepository.findById(id);
-        if (existingOrder.isPresent()) {
-            Order order = OrderMapper.toEntity(orderDto);
-            Order updatedOrder = existingOrder.get();
-            updatedOrder.setOrderDate(order.getOrderDate());
-            updatedOrder.setStatus(order.getStatus());
-            updatedOrder.clearOrderLines();
-            for (var line : order.getOrderLines()) {
-                updatedOrder.addOrderLine(line);
-            }
-            return OrderMapper.toDto(orderRepository.save(updatedOrder));
+        if (existingOrder.isEmpty()) {
+            throw new RuntimeException("Order not found with id: " + id);
         }
-        throw new RuntimeException("Order not found with id: " + id);
+        Order order = existingOrder.get();
+        order.setStatus(OrderStatus.valueOf(orderUpdateDto.status()));
+        Order updatedOrder = orderRepository.save(order);
+
+        return OrderMapper.toDto(updatedOrder);
     }
 
     @Override
@@ -109,6 +111,7 @@ public class OrderServiceImpl implements OrderService {
                     "OrderLine not found with id: " + orderLineId + " in order " + id
             );
         }
+
         existingOrder.removeOrderLine(lineToRemove);
         return OrderMapper.toDto(orderRepository.save(existingOrder));
     }

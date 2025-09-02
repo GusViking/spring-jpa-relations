@@ -3,6 +3,7 @@ package ek.osnb.jpa.orders.service;
 
 import ek.osnb.jpa.orders.dto.OrderDto;
 import ek.osnb.jpa.orders.dto.OrderLineDto;
+import ek.osnb.jpa.orders.dto.OrderUpdateDto;
 import ek.osnb.jpa.orders.model.OrderStatus;
 
 import java.util.List;
@@ -15,5 +16,7 @@ public interface OrderService {
     void deleteOrder(Long id);
     OrderDto addOrderLine(Long orderId, OrderLineDto orderLineDto);
     OrderDto removeOrderLine(Long orderId, Long orderLineId);
+    OrderDto updateOrderStatus(Long id, OrderUpdateDto orderUpdateDto);
+
 }
 

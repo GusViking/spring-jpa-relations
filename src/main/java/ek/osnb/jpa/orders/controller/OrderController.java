@@ -2,6 +2,7 @@ package ek.osnb.jpa.orders.controller;
 
 import ek.osnb.jpa.orders.dto.OrderDto;
 import ek.osnb.jpa.orders.dto.OrderLineDto;
+import ek.osnb.jpa.orders.dto.OrderUpdateDto;
 import ek.osnb.jpa.orders.model.Order;
 import ek.osnb.jpa.orders.model.OrderStatus;
 import ek.osnb.jpa.orders.service.OrderService;
@@ -15,6 +16,8 @@ import java.util.List;
 @RequestMapping("/api/orders")
 public class OrderController {
     private final OrderService orderService;
+    private Long orderLineId;
+
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -64,7 +67,14 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-
+    @PatchMapping("/{id}")
+    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable Long id, @RequestBody OrderUpdateDto orderUpdateDto) {
+        try {
+            return ResponseEntity.ok(orderService.removeOrderLine(id, orderLineId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable Long id) {
         try {
