@@ -1,6 +1,7 @@
 package ek.osnb.jpa.orders.controller;
 
 import ek.osnb.jpa.orders.dto.OrderDto;
+import ek.osnb.jpa.orders.dto.OrderLineDto;
 import ek.osnb.jpa.orders.model.Order;
 import ek.osnb.jpa.orders.model.OrderStatus;
 import ek.osnb.jpa.orders.service.OrderService;
@@ -16,6 +17,24 @@ public class OrderController {
     private final OrderService orderService;
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
+    }
+
+    @PostMapping("/{id}/order-lines")
+    public ResponseEntity<OrderDto> addOrderLine(@PathVariable Long id, @RequestBody OrderLineDto orderLineDto) {
+        try {
+            return ResponseEntity.ok(orderService.addOrderLine(id, orderLineDto));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @DeleteMapping("/{id}/order-lines/{orderLineId}")
+    public ResponseEntity<OrderDto> removeOrderLine(@PathVariable Long id, @PathVariable Long orderLineId) {
+        try {
+            return ResponseEntity.ok(orderService.removeOrderLine(id, orderLineId));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
     }
 
     @GetMapping
